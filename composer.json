@@ -1,0 +1,22 @@
+{
+    "name": "hexlet/code",
+    "description": "educational project",
+    "license": "MSI",
+    "bin": [
+        "bin/gendiff"
+    ],
+    "autoload": {
+        "psr-4": {
+            "Hexlet\\Code\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "dsedra",
+            "email": "neyrofix@gmail.com"
+        }
+    ],
+    "require": {
+        "docopt/docopt": "^1.0"
+    }
+}
