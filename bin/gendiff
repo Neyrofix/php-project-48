@@ -11,6 +11,7 @@ if (file_exists($autoloadPath1)) {
 }
 
 use Docopt\Handler;
+use function Hexlet\Code\Reader\readFiles;
 
 $doc = <<<DOC
 Generate diff
@@ -27,3 +28,31 @@ Options:
 DOC;
 
 $args = Docopt::handle($doc);
+
+// Получаем аргументы
+$arguments = $_SERVER['argv'];
+array_shift($arguments);
+// Функция для нормализации пути
+function normalizePath($path) {
+    // Если путь абсолютный, возвращаем его как есть
+    if (strpos($path, '/') === 0) {
+        return $path;
+    }
+    // Иначе преобразуем относительный путь в абсолютный
+    return realpath(getcwd() . '/' . $path);
+}
+// Нормализуем пути к файлам
+$file1Path = normalizePath($arguments[0]);
+$file2Path = normalizePath($arguments[1]);
+// Проверяем существование файлов
+if (!file_exists($file1Path)) {
+    echo "Файл $file1Path не существует\n";
+    exit(1);
+}
+
+if (!file_exists($file2Path)) {
+    echo "Файл $file2Path не существует\n";
+    exit(1);
+}
+
+readFiles($file1Path, $file2Path);
