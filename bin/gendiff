@@ -11,7 +11,8 @@ if (file_exists($autoloadPath1)) {
 }
 
 use Docopt\Handler;
-use function Hexlet\Code\Reader\readFiles;
+use function Hexlet\Code\Differ\readFiles;
+use function Hexlet\Code\Differ\differ;
 
 $doc = <<<DOC
 Generate diff
@@ -55,4 +56,5 @@ if (!file_exists($file2Path)) {
     exit(1);
 }
 
-readFiles($file1Path, $file2Path);
+$data = readFiles($file1Path, $file2Path);
+var_dump(differ($data[0], $data[1]));
