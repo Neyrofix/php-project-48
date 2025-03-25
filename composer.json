@@ -1,10 +1,25 @@
 {
     "name": "hexlet/code",
     "description": "educational project",
-    "license": "MSI",
+    "authors": [
+        {
+            "name": "densedra",
+            "email": "neyrofix@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "type": "library",
     "bin": [
         "bin/gendiff"
     ],
+    "scripts": {
+        "test": "phpunit tests"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Php\\Package\\Tests\\": "tests"
+        }
+    },
     "autoload": {
         "psr-4": {
             "Hexlet\\Code\\": "src/"
@@ -13,13 +28,23 @@
             "src/Differ.php"
         ]
     },
-    "authors": [
-        {
-            "name": "dsedra",
-            "email": "neyrofix@gmail.com"
-        }
-    ],
     "require": {
+        "illuminate/collections": "^12.0",
+        "nesbot/carbon": "^3.8",
+        "symfony/string": "^7.2",
+        "phpstan/phpstan": "^2.1",
         "docopt/docopt": "^1.0"
+    },
+    "require-dev": {
+        "psy/psysh": "@stable",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpstan/extension-installer": "^1.3",
+        "symfony/var-dumper": "^7.2",
+        "phpunit/phpunit": "^12.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
     }
 }
