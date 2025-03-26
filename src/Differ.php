@@ -2,68 +2,61 @@
 
 namespace Hexlet\Code\Differ;
 
-function normalizePath($path)
+function normalizePath(string $path): string
 {
-    // Если путь абсолютный, возвращаем его как есть
-    if (strpos($path, '/') === 0) {
-        return $path;
+    $absolutePath = realpath($path);
+    if ($absolutePath === false) {
+        throw new \InvalidArgumentException("Path {$path} does not exist.");
     }
-    // Иначе преобразуем относительный путь в абсолютный
-    return realpath(getcwd() . '/' . $path);
+    return $absolutePath;
 }
 
-function readFile(string $filePath)
+function readFile(string $filePath): array
 {
-    if (!file_exists($filePath)) {
-        throw new \Exception("The file {$filePath} does not exists.");
+    if (!is_file($filePath)) {
+        throw new \Exception("{$filePath} is not a file.");
     }
-    $file = file_get_contents($filePath);
-    return json_decode($file, true);
+    $content = (string) file_get_contents($filePath);
+    $data = json_decode($content, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new \Exception("Invalid JSON in {$filePath}.");
+    }
+    return $data;
 }
 
-function differ($arr1, $arr2)
+function formatValue(mixed $value): string
 {
-    $mainDiff = array_map(function ($key, $value) use ($arr2) {
-        switch ($key) {
-            case array_key_exists($key, $arr2) && $value === $arr2[$key]:
-                $value = is_bool($value) ? var_export($value, true) : $value;
-                return "  {$key}: {$value}";
-                break;
-            case array_key_exists($key, $arr2):
-                $value = is_bool($value) ? var_export($value, true) : $value;
-                return "- {$key}: {$value}";
-            default:
-                $value = is_bool($value) ? var_export($value, true) : $value;
-                return "- {$key}: {$value}";
-        }
-    }, array_keys($arr1), $arr1);
+    return is_bool($value) ? var_export($value, true) : (string)$value;
+}
 
-    $addedDiff = array_map(function ($key, $value) use ($arr1) {
-        if ((array_key_exists($key, $arr1) && $value !== $arr1[$key]) || (!array_key_exists($key, $arr1))) {
-            $value = is_bool($value) ? var_export($value, true) : $value;
-            return "+ {$key}: {$value}";
-        }
-    }, array_keys($arr2), $arr2);
-    $result = array_filter(array_merge($mainDiff, $addedDiff));
+function generateDiff(array $arr1, array $arr2): string
+{
+    $allKeys = array_unique(array_merge(array_keys($arr1), array_keys($arr2)));
+    sort($allKeys);
 
-    usort($result, function ($a, $b) {
-        $chunks1 = explode(':', $a)[0];
-        $chunks2 = explode(':', $b)[0];
-        if (substr($chunks1, 2) === substr($chunks2, 2)) {
-            if (str_starts_with($chunks1, '-')) {
-                return -1;
-            } else {
-                return 1;
-            }
+    $result = [];
+    foreach ($allKeys as $key) {
+        $value1 = $arr1[$key] ?? null;
+        $value2 = $arr2[$key] ?? null;
+
+        if ($value1 === $value2) {
+            $result[] = "  {$key}: " . formatValue($value1);
+            continue;
         }
-        return $a[2] < $b[2] ? -1 : 1;
-    });
+        if (array_key_exists($key, $arr1)) {
+            $result[] = "- {$key}: " . formatValue($value1);
+        }
+        if (array_key_exists($key, $arr2)) {
+            $result[] = "+ {$key}: " . formatValue($value2);
+        }
+    }
+
     return implode("\n", $result);
 }
 
-function genDiff($path1, $path2)
+function genDiff(string $path1, string $path2): string
 {
     $file1 = readFile(normalizePath($path1));
     $file2 = readFile(normalizePath($path2));
-    return differ($file1, $file2);
+    return generateDiff($file1, $file2);
 }
