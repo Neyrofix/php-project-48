@@ -77,16 +77,16 @@
         },
         {
             "name": "docopt/docopt",
-            "version": "1.0.5",
+            "version": "1.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/docopt/docopt.php.git",
-                "reference": "0e3db660cf2f2eb07a83253790b7d97cdb398826"
+                "reference": "bcb963c87d61948919146d25c22ca0ab74896c24"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/docopt/docopt.php/zipball/0e3db660cf2f2eb07a83253790b7d97cdb398826",
-                "reference": "0e3db660cf2f2eb07a83253790b7d97cdb398826",
+                "url": "https://api.github.com/repos/docopt/docopt.php/zipball/bcb963c87d61948919146d25c22ca0ab74896c24",
+                "reference": "bcb963c87d61948919146d25c22ca0ab74896c24",
                 "shasum": ""
             },
             "require": {
@@ -118,9 +118,9 @@
             ],
             "support": {
                 "issues": "https://github.com/docopt/docopt.php/issues",
-                "source": "https://github.com/docopt/docopt.php/tree/1.0.5"
+                "source": "https://github.com/docopt/docopt.php/tree/1.0.6"
             },
-            "time": "2023-03-22T12:31:48+00:00"
+            "time": "2025-01-20T00:35:03+00:00"
         },
         {
             "name": "illuminate/collections",
