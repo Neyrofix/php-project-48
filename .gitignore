@@ -1,6 +1,5 @@
 vendor/
 .git/
-.phpunit.cache/
 
 # IDE
 .idea/
@@ -29,3 +28,4 @@ dist/
 # Test coverage
 coverage/
 build/logs/
+.phpunit.cache/

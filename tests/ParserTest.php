@@ -103,4 +103,10 @@ class ParserTest extends TestCase
 
         parseFile($filePath);
     }
+
+    public function testParseEmptyFile(): void
+    {
+        $filePath = $this->fixturesPath . 'empty1.json';
+        $this->assertEquals([], parseFile($filePath));
+    }
 }

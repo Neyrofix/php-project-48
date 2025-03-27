@@ -10,9 +10,10 @@ if (file_exists($autoloadPath1)) {
     require_once $autoloadPath2;
 }
 
-use Docopt\Handler;
-use function Hexlet\Code\Differ\readFiles;
+use Docopt\Response;
 use function Hexlet\Code\Differ\genDiff;
+
+const VERSION = '1.0.0';
 
 $doc = <<<DOC
 Generate diff
@@ -28,10 +29,28 @@ Options:
   --format <fmt>                Report format [default: stylish]
 DOC;
 
-$args = Docopt::handle($doc);
+try {
+    $response = Docopt::handle($doc);
 
-// Получаем аргументы
-$arguments = $_SERVER['argv'];
-array_shift($arguments);
+    if ($response['--help']) {
+        print($doc);
+        exit(0);
+    }
 
-print(genDiff($arguments[0], $arguments[1]));
+    if ($response['--version']) {
+        print('gendiff version ' . VERSION . PHP_EOL);
+        exit(0);
+    }
+
+    $firstFile = $response['<firstFile>'];
+    $secondFile = $response['<secondFile>'];
+    $format = $response['--format'] ?? 'stylish';
+
+    $diff = genDiff($firstFile, $secondFile, $format);
+    print($diff . PHP_EOL);
+    exit(0);
+
+} catch (\Exception $e) {
+    print('Error: ' . $e->getMessage() . PHP_EOL);
+    exit(1);
+}

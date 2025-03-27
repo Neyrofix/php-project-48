@@ -16,6 +16,10 @@ class DifferTest extends TestCase
     private const EXPECTED_DIFF =
     "- follow: false\n  host: hexlet.io\n- proxy: 123.234.53.22\n- timeout: 50\n+ timeout: 20\n+ verbose: true";
 
+    //private const EXPECTED_DIFF_JSON =
+    //'{"- follow":false,"  host":"hexlet.io","- proxy":"123.234.53.22",
+    //"- timeout":50,"+ timeout":20,"+ verbose":true}';
+
     protected function setUp(): void
     {
         $this->fixturesPath = __DIR__ . '/fixtures/';
@@ -83,5 +87,22 @@ class DifferTest extends TestCase
         $secondPath = $this->fixturesPath . 'file2.yml';
 
         $this->assertEquals(self::EXPECTED_DIFF, genDiff($firstPath, $secondPath));
+    }
+
+    public function testGenDiffDifferentFormats(): void
+    {
+        $firstPath = $this->fixturesPath . 'file1.json';
+        $secondPath = $this->fixturesPath . 'file2.json';
+
+        $this->assertEquals(self::EXPECTED_DIFF, genDiff($firstPath, $secondPath));
+        //$this->assertEquals(self::EXPECTED_DIFF_JSON, genDiff($firstPath, $secondPath, 'json'));
+    }
+
+    public function testGenDiffEmptyFiles(): void
+    {
+        $firstPath = $this->fixturesPath . 'empty1.json';
+        $secondPath = $this->fixturesPath . 'empty2.json';
+
+        $this->assertEquals('', genDiff($firstPath, $secondPath));
     }
 }
