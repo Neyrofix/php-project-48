@@ -3,6 +3,7 @@
 namespace Hexlet\Tests;
 
 use PHPUnit\Framework\TestCase;
+
 use const Hexlet\Code\Differ\ERROR_MESSAGES;
 use const Hexlet\Code\Differ\SUPPORTED_FORMATS;
 
