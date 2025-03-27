@@ -39,7 +39,6 @@ function generateDiff(array $firstArray, array $secondArray): string
 {
     $uniqueKeys = array_unique(array_merge(array_keys($firstArray), array_keys($secondArray)));
     sort($uniqueKeys);
-
     $diffLines = [];
     foreach ($uniqueKeys as $key) {
         $firstValue = $firstArray[$key] ?? null;
@@ -49,7 +48,6 @@ function generateDiff(array $firstArray, array $secondArray): string
             $diffLines[] = formatDiffLine(DIFF_FORMAT['UNCHANGED'], $key, $firstValue);
             continue;
         }
-
         if (array_key_exists($key, $firstArray)) {
             $diffLines[] = formatDiffLine(DIFF_FORMAT['REMOVED'], $key, $firstValue);
         }
@@ -57,7 +55,6 @@ function generateDiff(array $firstArray, array $secondArray): string
             $diffLines[] = formatDiffLine(DIFF_FORMAT['ADDED'], $key, $secondValue);
         }
     }
-
     return implode("\n", $diffLines);
 }
 
