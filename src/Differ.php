@@ -5,6 +5,8 @@ namespace Hexlet\Code\Differ;
 use function Hexlet\Code\Differ\Parser\parseFile;
 use function Hexlet\Code\Differ\Parser\normalizePath;
 
+use const Hexlet\Code\Differ\DIFF_FORMAT;
+
 /**
  * Форматирует значение для вывода
  * @param mixed $value Значение для форматирования
@@ -16,9 +18,21 @@ function formatValue(mixed $value): string
 }
 
 /**
+ * Форматирует строку diff
+ * @param string $prefix Префикс строки (  , - или +)
+ * @param string $key Ключ
+ * @param mixed $value Значение
+ * @return string Отформатированная строка
+ */
+function formatDiffLine(string $prefix, string $key, mixed $value): string
+{
+    return "{$prefix}{$key}: " . formatValue($value);
+}
+
+/**
  * Генерирует diff между двумя массивами
- * @param array $firstArray Первый массив для сравнения
- * @param array $secondArray Второй массив для сравнения
+ * @param array<string, mixed> $firstArray Первый массив для сравнения
+ * @param array<string, mixed> $secondArray Второй массив для сравнения
  * @return string Строка с различиями в формате diff
  */
 function generateDiff(array $firstArray, array $secondArray): string
@@ -32,15 +46,15 @@ function generateDiff(array $firstArray, array $secondArray): string
         $secondValue = $secondArray[$key] ?? null;
 
         if ($firstValue === $secondValue) {
-            $diffLines[] = "  {$key}: " . formatValue($firstValue);
+            $diffLines[] = formatDiffLine(DIFF_FORMAT['UNCHANGED'], $key, $firstValue);
             continue;
         }
 
         if (array_key_exists($key, $firstArray)) {
-            $diffLines[] = "- {$key}: " . formatValue($firstValue);
+            $diffLines[] = formatDiffLine(DIFF_FORMAT['REMOVED'], $key, $firstValue);
         }
         if (array_key_exists($key, $secondArray)) {
-            $diffLines[] = "+ {$key}: " . formatValue($secondValue);
+            $diffLines[] = formatDiffLine(DIFF_FORMAT['ADDED'], $key, $secondValue);
         }
     }
 
