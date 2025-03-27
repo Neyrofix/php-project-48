@@ -3,6 +3,7 @@
 namespace Hexlet\Tests;
 
 use PHPUnit\Framework\TestCase;
+
 use function Hexlet\Code\Differ\genDiff;
 use function Hexlet\Code\Differ\generateDiff;
 use function Hexlet\Code\Differ\formatValue;
@@ -11,6 +12,9 @@ use function Hexlet\Code\Differ\Parser\normalizePath;
 class DifferTest extends TestCase
 {
     private string $fixturesPath;
+
+    private const EXPECTED_DIFF =
+    "- follow: false\n  host: hexlet.io\n- proxy: 123.234.53.22\n- timeout: 50\n+ timeout: 20\n+ verbose: true";
 
     protected function setUp(): void
     {
@@ -54,9 +58,7 @@ class DifferTest extends TestCase
             'host' => 'hexlet.io'
         ];
 
-        $expected = "- follow: false\n  host: hexlet.io\n- proxy: 123.234.53.22\n- timeout: 50\n+ timeout: 20\n+ verbose: true";
-
-        $this->assertEquals($expected, generateDiff($firstArray, $secondArray));
+        $this->assertEquals(self::EXPECTED_DIFF, generateDiff($firstArray, $secondArray));
     }
 
     public function testGenDiffJson(): void
@@ -64,9 +66,7 @@ class DifferTest extends TestCase
         $firstPath = $this->fixturesPath . 'file1.json';
         $secondPath = $this->fixturesPath . 'file2.json';
 
-        $expected = "- follow: false\n  host: hexlet.io\n- proxy: 123.234.53.22\n- timeout: 50\n+ timeout: 20\n+ verbose: true";
-
-        $this->assertEquals($expected, genDiff($firstPath, $secondPath));
+        $this->assertEquals(self::EXPECTED_DIFF, genDiff($firstPath, $secondPath));
     }
 
     public function testGenDiffYaml(): void
@@ -74,9 +74,7 @@ class DifferTest extends TestCase
         $firstPath = $this->fixturesPath . 'file1.yml';
         $secondPath = $this->fixturesPath . 'file2.yml';
 
-        $expected = "- follow: false\n  host: hexlet.io\n- proxy: 123.234.53.22\n- timeout: 50\n+ timeout: 20\n+ verbose: true";
-
-        $this->assertEquals($expected, genDiff($firstPath, $secondPath));
+        $this->assertEquals(self::EXPECTED_DIFF, genDiff($firstPath, $secondPath));
     }
 
     public function testGenDiffMixedFormats(): void
@@ -84,8 +82,6 @@ class DifferTest extends TestCase
         $firstPath = $this->fixturesPath . 'file1.json';
         $secondPath = $this->fixturesPath . 'file2.yml';
 
-        $expected = "- follow: false\n  host: hexlet.io\n- proxy: 123.234.53.22\n- timeout: 50\n+ timeout: 20\n+ verbose: true";
-
-        $this->assertEquals($expected, genDiff($firstPath, $secondPath));
+        $this->assertEquals(self::EXPECTED_DIFF, genDiff($firstPath, $secondPath));
     }
 }

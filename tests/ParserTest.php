@@ -3,6 +3,7 @@
 namespace Hexlet\Tests;
 
 use PHPUnit\Framework\TestCase;
+
 use function Hexlet\Code\Differ\Parser\parseFile;
 use function Hexlet\Code\Differ\Parser\parseJson;
 use function Hexlet\Code\Differ\Parser\parseYaml;
