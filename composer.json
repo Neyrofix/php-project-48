@@ -27,7 +27,8 @@
         "files": [
             "src/Differ.php",
             "src/Parser.php",
-            "src/constants.php"
+            "src/constants.php",
+            "src/Formaters.php"
         ]
     },
     "require": {

@@ -4,30 +4,10 @@ namespace Hexlet\Code\Differ;
 
 use function Hexlet\Code\Differ\Parser\parseFile;
 use function Hexlet\Code\Differ\Parser\normalizePath;
+use function Hexlet\Code\Differ\Formaters\formatValue;
+use function Hexlet\Code\Differ\Formaters\formatDiffLine;
 
 use const Hexlet\Code\Differ\DIFF_FORMAT;
-
-/**
- * Форматирует значение для вывода
- * @param mixed $value Значение для форматирования
- * @return string Отформатированное значение
- */
-function formatValue(mixed $value): string
-{
-    return is_bool($value) ? var_export($value, true) : (string)$value;
-}
-
-/**
- * Форматирует строку diff
- * @param string $prefix Префикс строки (  , - или +)
- * @param string $key Ключ
- * @param mixed $value Значение
- * @return string Отформатированная строка
- */
-function formatDiffLine(string $prefix, string $key, mixed $value): string
-{
-    return "{$prefix}{$key}: " . formatValue($value);
-}
 
 /**
  * Генерирует diff между двумя массивами
@@ -43,6 +23,12 @@ function generateDiff(array $firstArray, array $secondArray): string
     foreach ($uniqueKeys as $key) {
         $firstValue = $firstArray[$key] ?? null;
         $secondValue = $secondArray[$key] ?? null;
+
+        if (is_array($firstValue) && is_array($secondValue)) {
+            $nestedDiff = generateDiff($firstValue, $secondValue);
+            $diffLines[] = formatDiffLine(DIFF_FORMAT['NESTED'], $key, $nestedDiff);
+            continue;
+        }
 
         if ($firstValue === $secondValue) {
             $diffLines[] = formatDiffLine(DIFF_FORMAT['UNCHANGED'], $key, $firstValue);

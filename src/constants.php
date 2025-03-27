@@ -5,7 +5,8 @@ namespace Hexlet\Code\Differ;
 const DIFF_FORMAT = [
     'UNCHANGED' => '  ',
     'REMOVED' => '- ',
-    'ADDED' => '+ '
+    'ADDED' => '+ ',
+    'NESTED' => '    '
 ];
 
 const SUPPORTED_FORMATS = [

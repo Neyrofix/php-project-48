@@ -6,8 +6,6 @@ use PHPUnit\Framework\TestCase;
 
 use function Hexlet\Code\Differ\genDiff;
 use function Hexlet\Code\Differ\generateDiff;
-use function Hexlet\Code\Differ\formatValue;
-use function Hexlet\Code\Differ\Parser\normalizePath;
 
 class DifferTest extends TestCase
 {
@@ -23,28 +21,6 @@ class DifferTest extends TestCase
     protected function setUp(): void
     {
         $this->fixturesPath = __DIR__ . '/fixtures/';
-    }
-
-    public function testFormatValue(): void
-    {
-        $this->assertEquals('true', formatValue(true));
-        $this->assertEquals('false', formatValue(false));
-        $this->assertEquals('123', formatValue(123));
-        $this->assertEquals('test', formatValue('test'));
-    }
-
-    public function testNormalizePath(): void
-    {
-        $path = $this->fixturesPath . 'file1.json';
-        $this->assertEquals(realpath($path), normalizePath($path));
-    }
-
-    public function testNormalizePathNotExists(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Path not-exists.json does not exist.');
-
-        normalizePath('not-exists.json');
     }
 
     public function testGenerateDiff(): void

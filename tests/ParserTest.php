@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use function Hexlet\Code\Differ\Parser\parseFile;
 use function Hexlet\Code\Differ\Parser\parseJson;
 use function Hexlet\Code\Differ\Parser\parseYaml;
+use function Hexlet\Code\Differ\Parser\normalizePath;
 
 class ParserTest extends TestCase
 {
@@ -15,6 +16,20 @@ class ParserTest extends TestCase
     protected function setUp(): void
     {
         $this->fixturesPath = __DIR__ . '/fixtures/';
+    }
+
+    public function testNormalizePath(): void
+    {
+        $path = $this->fixturesPath . 'file1.json';
+        $this->assertEquals(realpath($path), normalizePath($path));
+    }
+
+    public function testNormalizePathNotExists(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Path not-exists.json does not exist.');
+
+        normalizePath('not-exists.json');
     }
 
     public function testParseJson(): void
