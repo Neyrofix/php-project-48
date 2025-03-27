@@ -25,7 +25,8 @@
             "Hexlet\\Code\\": "src/"
         },
         "files": [
-            "src/Differ.php"
+            "src/Differ.php",
+            "src/Parser.php"
         ]
     },
     "require": {
@@ -33,7 +34,8 @@
         "nesbot/carbon": "^3.8",
         "symfony/string": "^7.2",
         "phpstan/phpstan": "^1.9",
-        "docopt/docopt": "^1.0"
+        "docopt/docopt": "^1.0",
+        "symfony/yaml": "^7.2"
     },
     "require-dev": {
         "psy/psysh": "@stable",

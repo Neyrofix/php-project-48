@@ -1,3 +1,31 @@
 vendor/
 .git/
 .phpunit.cache/
+
+# IDE
+.idea/
+.vscode/
+.sublime-project
+.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs and temp files
+*.log
+*.cache
+tmp/
+temp/
+
+# Environment
+.env
+.env.*
+
+# Build
+build/
+dist/
+
+# Test coverage
+coverage/
+build/logs/

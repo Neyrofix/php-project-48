@@ -2,61 +2,60 @@
 
 namespace Hexlet\Code\Differ;
 
-function normalizePath(string $path): string
-{
-    $absolutePath = realpath($path);
-    if ($absolutePath === false) {
-        throw new \InvalidArgumentException("Path {$path} does not exist.");
-    }
-    return $absolutePath;
-}
+use function Hexlet\Code\Differ\Parser\parseFile;
+use function Hexlet\Code\Differ\Parser\normalizePath;
 
-function readFile(string $filePath): array
-{
-    if (!is_file($filePath)) {
-        throw new \Exception("{$filePath} is not a file.");
-    }
-    $content = (string) file_get_contents($filePath);
-    $data = json_decode($content, true);
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        throw new \Exception("Invalid JSON in {$filePath}.");
-    }
-    return $data;
-}
-
+/**
+ * Форматирует значение для вывода
+ * @param mixed $value Значение для форматирования
+ * @return string Отформатированное значение
+ */
 function formatValue(mixed $value): string
 {
     return is_bool($value) ? var_export($value, true) : (string)$value;
 }
 
-function generateDiff(array $arr1, array $arr2): string
+/**
+ * Генерирует diff между двумя массивами
+ * @param array $firstArray Первый массив для сравнения
+ * @param array $secondArray Второй массив для сравнения
+ * @return string Строка с различиями в формате diff
+ */
+function generateDiff(array $firstArray, array $secondArray): string
 {
-    $allKeys = array_unique(array_merge(array_keys($arr1), array_keys($arr2)));
-    sort($allKeys);
+    $uniqueKeys = array_unique(array_merge(array_keys($firstArray), array_keys($secondArray)));
+    sort($uniqueKeys);
 
-    $result = [];
-    foreach ($allKeys as $key) {
-        $value1 = $arr1[$key] ?? null;
-        $value2 = $arr2[$key] ?? null;
+    $diffLines = [];
+    foreach ($uniqueKeys as $key) {
+        $firstValue = $firstArray[$key] ?? null;
+        $secondValue = $secondArray[$key] ?? null;
 
-        if ($value1 === $value2) {
-            $result[] = "  {$key}: " . formatValue($value1);
+        if ($firstValue === $secondValue) {
+            $diffLines[] = "  {$key}: " . formatValue($firstValue);
             continue;
         }
-        if (array_key_exists($key, $arr1)) {
-            $result[] = "- {$key}: " . formatValue($value1);
+
+        if (array_key_exists($key, $firstArray)) {
+            $diffLines[] = "- {$key}: " . formatValue($firstValue);
         }
-        if (array_key_exists($key, $arr2)) {
-            $result[] = "+ {$key}: " . formatValue($value2);
+        if (array_key_exists($key, $secondArray)) {
+            $diffLines[] = "+ {$key}: " . formatValue($secondValue);
         }
     }
 
-    return implode("\n", $result);
+    return implode("\n", $diffLines);
 }
 
-function genDiff(string $path1, string $path2): string
+/**
+ * Сравнивает два файла и возвращает их различия
+ * @param string $firstPath Путь к первому файлу
+ * @param string $secondPath Путь ко второму файлу
+ * @return string Строка с различиями в формате diff
+ */
+function genDiff(string $firstPath, string $secondPath): string
 {
-    $file1 = readFile(normalizePath($path1));
-    $file2 = readFile(normalizePath($path2));
-    return generateDiff($file1, $file2);
+    $firstFileData = parseFile(normalizePath($firstPath));
+    $secondFileData = parseFile(normalizePath($secondPath));
+    return generateDiff($firstFileData, $secondFileData);
 }
