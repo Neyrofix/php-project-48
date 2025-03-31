@@ -6,7 +6,7 @@ const DIFF_FORMAT = [
     'UNCHANGED' => '  ',
     'REMOVED' => '- ',
     'ADDED' => '+ ',
-    'NESTED' => '    '
+    'NESTED' => '  '
 ];
 
 const SUPPORTED_FORMATS = [
@@ -21,4 +21,10 @@ const ERROR_MESSAGES = [
     'INVALID_JSON' => 'Invalid JSON in %s.',
     'INVALID_YAML' => 'Invalid YAML in %s: %s',
     'UNSUPPORTED_FORMAT' => 'Unsupported file format: %s'
+];
+const TYPE_PREFIXES = [
+    'unchanged',
+    'removed',
+    'added',
+    'nested'
 ];

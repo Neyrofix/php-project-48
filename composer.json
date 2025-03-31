@@ -28,7 +28,7 @@
             "src/Differ.php",
             "src/Parser.php",
             "src/constants.php",
-            "src/Formaters.php"
+            "src/Formaters/Stylish.php"
         ]
     },
     "require": {

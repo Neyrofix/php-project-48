@@ -7,12 +7,7 @@ use Symfony\Component\Yaml\Yaml;
 use const Hexlet\Code\Differ\ERROR_MESSAGES;
 use const Hexlet\Code\Differ\SUPPORTED_FORMATS;
 
-/**
- * Преобразует относительный путь в абсолютный
- * @param string $path Путь к файлу
- * @return string Абсолютный путь
- * @throws \InvalidArgumentException
- */
+//Преобразует относительный путь в абсолютный
 function normalizePath(string $path): string
 {
     $absolutePath = realpath($path);
@@ -22,12 +17,7 @@ function normalizePath(string $path): string
     return $absolutePath;
 }
 
-/**
- * Читает и парсит файл в зависимости от его расширения
- * @param string $filePath Путь к файлу
- * @return array Распарсенные данные
- * @throws \Exception
- */
+//Читает и парсит файл в зависимости от его расширения
 function parseFile(string $filePath): array
 {
     if (!is_file($filePath)) {
@@ -48,13 +38,7 @@ function parseFile(string $filePath): array
     };
 }
 
-/**
- * Парсит JSON строку
- * @param string $content Содержимое JSON файла
- * @param string $filePath Путь к файлу (для сообщений об ошибках)
- * @return array Распарсенные данные
- * @throws \Exception
- */
+//Парсит JSON строку
 function parseJson(string $content, string $filePath): array
 {
     $data = json_decode($content, true);
@@ -64,13 +48,7 @@ function parseJson(string $content, string $filePath): array
     return $data;
 }
 
-/**
- * Парсит YAML строку
- * @param string $content Содержимое YAML файла
- * @param string $filePath Путь к файлу (для сообщений об ошибках)
- * @return array Распарсенные данные
- * @throws \Exception
- */
+//Парсит YAML строку
 function parseYaml(string $content, string $filePath): array
 {
     try {
