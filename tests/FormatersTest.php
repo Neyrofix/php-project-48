@@ -11,6 +11,7 @@ use function Hexlet\Code\Differ\Formaters\Stylish\formatValue;
 use function Hexlet\Code\Differ\Formaters\Plain\plainDiff;
 use function Hexlet\Code\Differ\Formaters\Plain\formatPlainNode;
 use function Hexlet\Code\Differ\Formaters\Plain\formatPlainValue;
+use function Hexlet\Code\Differ\Formaters\Json\jsonDiff;
 
 class FormatersTest extends TestCase
 {
@@ -412,5 +413,116 @@ class FormatersTest extends TestCase
             . "Property 'group3' was added with value: [complex value]";
 
         $this->assertEquals($expected, plainDiff($diff));
+    }
+
+    // Тесты для Json форматтера
+    public function testJsonDiffEmpty(): void
+    {
+        $diff = [];
+        $expected = '{}';
+        $this->assertEquals($expected, jsonDiff($diff));
+    }
+
+    public function testJsonDiffSimple(): void
+    {
+        $diff = [
+            'key1' => [
+                'type' => 'unchanged',
+                'class' => 'item',
+                'value' => 'value1'
+            ],
+            'key2' => [
+                'type' => 'added',
+                'class' => 'item',
+                'value' => 'value2'
+            ]
+        ];
+        $expected = '{
+    "key1": "value1",
+    "+key2": "value2"
+}';
+        $this->assertEquals($expected, jsonDiff($diff));
+    }
+
+    public function testJsonDiffComplex(): void
+    {
+        $diff = [
+            'common' => [
+                'type' => 'unchanged',
+                'class' => 'node',
+                'children' => [
+                    'follow' => [
+                        'type' => 'added',
+                        'class' => 'item',
+                        'value' => false
+                    ],
+                    'setting1' => [
+                        'type' => 'unchanged',
+                        'class' => 'item',
+                        'value' => 'Value 1'
+                    ],
+                    'setting2' => [
+                        'type' => 'removed',
+                        'class' => 'item',
+                        'value' => 200
+                    ],
+                    'setting3' => [
+                        'type' => 'changed',
+                        'class' => 'item',
+                        'value' => true,
+                        'newValue' => null
+                    ],
+                    'setting4' => [
+                        'type' => 'added',
+                        'class' => 'item',
+                        'value' => 'blah blah'
+                    ]
+                ]
+            ]
+        ];
+        $expected = '{
+    "common": {
+        "+follow": false,
+        "setting1": "Value 1",
+        "-setting2": 200,
+        "-setting3": true,
+        "+setting3": null,
+        "+setting4": "blah blah"
+    }
+}';
+        $this->assertEquals($expected, jsonDiff($diff));
+    }
+
+    public function testJsonDiffNested(): void
+    {
+        $diff = [
+            'group1' => [
+                'type' => 'unchanged',
+                'class' => 'node',
+                'children' => [
+                    'nested' => [
+                        'type' => 'unchanged',
+                        'class' => 'node',
+                        'children' => [
+                            'key' => [
+                                'type' => 'changed',
+                                'class' => 'item',
+                                'value' => 'old',
+                                'newValue' => 'new'
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $expected = '{
+    "group1": {
+        "nested": {
+            "-key": "old",
+            "+key": "new"
+        }
+    }
+}';
+        $this->assertEquals($expected, jsonDiff($diff));
     }
 }

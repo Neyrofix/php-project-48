@@ -6,6 +6,7 @@ use function Hexlet\Code\Differ\Parser\parseFile;
 use function Hexlet\Code\Differ\Parser\normalizePath;
 use function Hexlet\Code\Differ\Formaters\Stylish\stylishDiff;
 use function Hexlet\Code\Differ\Formaters\Plain\plainDiff;
+use function Hexlet\Code\Differ\Formaters\Json\jsonDiff;
 
 //Генерирует промежуточный массив для последующего форматирования
 function generateDiff(array $firstArray, array $secondArray): array
@@ -120,6 +121,9 @@ function genDiff(string $firstPath, string $secondPath, string $format = 'stylis
     }
     if ($format === 'plain') {
         return plainDiff($diff);
+    }
+    if ($format === 'json') {
+        return jsonDiff($diff);
     }
     return stylishDiff($diff);
 }
