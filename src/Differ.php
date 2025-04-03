@@ -4,9 +4,10 @@ namespace Hexlet\Code\Differ;
 
 use function Hexlet\Code\Differ\Parser\parseFile;
 use function Hexlet\Code\Differ\Parser\normalizePath;
-use function Hexlet\Code\Differ\Formaters\Stylish\formatDiff;
+use function Hexlet\Code\Differ\Formaters\Stylish\stylishDiff;
+use function Hexlet\Code\Differ\Formaters\Plain\plainDiff;
 
-//Генерирует разницу между двумя массивами
+//Генерирует промежуточный массив для последующего форматирования
 function generateDiff(array $firstArray, array $secondArray): array
 {
     $uniqueKeys = array_unique(array_merge(array_keys($firstArray), array_keys($secondArray)));
@@ -108,11 +109,17 @@ function makeNestedDiff(array $value): array
     ];
 }
 
-//Сравнивает два файла и возвращает разницу
-function genDiff(string $firstPath, string $secondPath): string
+//Сравнивает два файла и возвращает разницу в зависимости от формата
+function genDiff(string $firstPath, string $secondPath, string $format = 'stylish'): string
 {
     $firstFileData = parseFile(normalizePath($firstPath));
     $secondFileData = parseFile(normalizePath($secondPath));
     $diff = generateDiff($firstFileData, $secondFileData);
-    return formatDiff($diff);
+    if ($format === 'stylish') {
+        return stylishDiff($diff);
+    }
+    if ($format === 'plain') {
+        return plainDiff($diff);
+    }
+    return stylishDiff($diff);
 }

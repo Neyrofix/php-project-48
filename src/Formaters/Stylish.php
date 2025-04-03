@@ -4,8 +4,8 @@ namespace Hexlet\Code\Differ\Formaters\Stylish;
 
 use const Hexlet\Code\Differ\DIFF_FORMAT;
 
-//Форматирует разницу
-function formatDiff(array $diff): string
+//форматирует промежуточный массив в строку в виде дерева
+function stylishDiff(array $diff): string
 {
     return "{\n" . formatDiffContent($diff, 1) . "\n}";
 }
@@ -28,12 +28,12 @@ function formatNode(string $key, array $node, int $depth): string
 {
     $indent = str_repeat('    ', $depth - 1);
     $type = $node['type'];
-    $nodeClass = $node['class'];
+    $class = $node['class'];
     $value = $node['value'] ?? null;
     $newValue = $node['newValue'] ?? null;
     $children = $node['children'] ?? null;
 
-    if ($nodeClass === 'node') {
+    if ($class === 'node') {
         if ($type === 'unchanged') {
             return "{$indent}    {$key}: {\n" . formatDiffContent($children, $depth + 1) . "\n{$indent}    }";
         } elseif ($type === 'removed') {
@@ -58,7 +58,7 @@ function formatNode(string $key, array $node, int $depth): string
     return "";
 }
 
-//Форматирует значение
+//Форматирует значение и проверяет тип
 function formatValue(mixed $value, int $depth): string
 {
     if (is_array($value)) {
@@ -88,8 +88,8 @@ function formatValue(mixed $value, int $depth): string
 function getPrefix(string $type): string
 {
     return match ($type) {
-        'added' => DIFF_FORMAT['ADDED'],
-        'removed' => DIFF_FORMAT['REMOVED'],
-        default => DIFF_FORMAT['UNCHANGED']
+        'added' => '+',
+        'removed' => '-',
+        default => ' '
     };
 }

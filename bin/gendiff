@@ -12,8 +12,7 @@ if (file_exists($autoloadPath1)) {
 
 use Docopt\Response;
 use function Hexlet\Code\Differ\genDiff;
-use function Hexlet\Code\Differ\Parser\parseFile;
-use function Hexlet\Code\Differ\Parser\normalizePath;
+use function cli\line;
 
 const VERSION = '1.0.0';
 
@@ -46,9 +45,9 @@ try {
 
     $firstFile = $response['<firstFile>'];
     $secondFile = $response['<secondFile>'];
-    $format = $response['--format'] ?? 'stylish';
+    $format = $response['--format'];
 
-    print_r(genDiff($firstFile, $secondFile));
+    line(genDiff($firstFile, $secondFile, $format));
     exit(0);
 
 } catch (\Exception $e) {

@@ -4,46 +4,46 @@ namespace Hexlet\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use function Hexlet\Code\Differ\Formaters\Stylish\formatDiff;
+use function Hexlet\Code\Differ\Formaters\Stylish\stylishDiff;
 use function Hexlet\Code\Differ\Formaters\Stylish\formatDiffContent;
 use function Hexlet\Code\Differ\Formaters\Stylish\formatNode;
 use function Hexlet\Code\Differ\Formaters\Stylish\formatValue;
-use function Hexlet\Code\Differ\Formaters\Stylish\getPrefix;
+use function Hexlet\Code\Differ\Formaters\Plain\plainDiff;
+use function Hexlet\Code\Differ\Formaters\Plain\formatPlainNode;
+use function Hexlet\Code\Differ\Formaters\Plain\formatPlainValue;
 
 class FormatersTest extends TestCase
 {
-    public function testFormatValue(): void
+    // Тесты для Stylish форматтера
+    public function testStylishFormatValue(): void
     {
-        // Тест для форматирования строки
+        // Тест для строки
         $this->assertEquals('test', formatValue('test', 1));
 
-        // Тест для форматирования числа
+        // Тест для числа
         $this->assertEquals('123', formatValue(123, 1));
 
-        // Тест для форматирования булевых значений
+        // Тест для булевых значений
         $this->assertEquals('true', formatValue(true, 1));
         $this->assertEquals('false', formatValue(false, 1));
 
-        // Тест для форматирования null
+        // Тест для null
         $this->assertEquals('null', formatValue(null, 1));
 
-        // Тест для форматирования массива
+        // Тест для массива
         $array = ['key' => 'value'];
         $expected = "{\n    key: value\n}";
         $this->assertEquals($expected, formatValue($array, 1));
 
-        // Тест для форматирования вложенного массива
+        // Тест для вложенного массива
         $nestedArray = ['key' => ['nested' => 'value']];
         $expectedNested = "{\n    key: {\n        nested: value\n    }\n}";
-        $this->assertEquals(
-            $expectedNested,
-            formatValue($nestedArray, 1)
-        );
+        $this->assertEquals($expectedNested, formatValue($nestedArray, 1));
     }
 
-    public function testFormatNode(): void
+    public function testStylishFormatNode(): void
     {
-        // Тест для форматирования узла с типом unchanged и классом item
+        // Тест для unchanged item
         $node = [
             'type' => 'unchanged',
             'class' => 'item',
@@ -52,7 +52,7 @@ class FormatersTest extends TestCase
         $expected = "    key: value";
         $this->assertEquals($expected, formatNode('key', $node, 1));
 
-        // Тест для форматирования узла с типом added и классом item
+        // Тест для added item
         $node = [
             'type' => 'added',
             'class' => 'item',
@@ -61,7 +61,7 @@ class FormatersTest extends TestCase
         $expected = "  + key: value";
         $this->assertEquals($expected, formatNode('key', $node, 1));
 
-        // Тест для форматирования узла с типом removed и классом item
+        // Тест для removed item
         $node = [
             'type' => 'removed',
             'class' => 'item',
@@ -70,7 +70,7 @@ class FormatersTest extends TestCase
         $expected = "  - key: value";
         $this->assertEquals($expected, formatNode('key', $node, 1));
 
-        // Тест для форматирования узла с типом changed и классом item
+        // Тест для changed item
         $node = [
             'type' => 'changed',
             'class' => 'item',
@@ -80,7 +80,7 @@ class FormatersTest extends TestCase
         $expected = "  - key: old\n  + key: new";
         $this->assertEquals($expected, formatNode('key', $node, 1));
 
-        // Тест для форматирования узла с типом unchanged и классом node
+        // Тест для unchanged node
         $node = [
             'type' => 'unchanged',
             'class' => 'node',
@@ -93,12 +93,9 @@ class FormatersTest extends TestCase
             ]
         ];
         $expected = "    key: {\n        nested: value\n    }";
-        $this->assertEquals(
-            $expected,
-            formatNode('key', $node, 1)
-        );
+        $this->assertEquals($expected, formatNode('key', $node, 1));
 
-        // Тест для форматирования узла с типом added и классом node
+        // Тест для added node
         $node = [
             'type' => 'added',
             'class' => 'node',
@@ -111,12 +108,9 @@ class FormatersTest extends TestCase
             ]
         ];
         $expected = "  + key: {\n        nested: value\n    }";
-        $this->assertEquals(
-            $expected,
-            formatNode('key', $node, 1)
-        );
+        $this->assertEquals($expected, formatNode('key', $node, 1));
 
-        // Тест для форматирования узла с типом removed и классом node
+        // Тест для removed node
         $node = [
             'type' => 'removed',
             'class' => 'node',
@@ -129,15 +123,11 @@ class FormatersTest extends TestCase
             ]
         ];
         $expected = "  - key: {\n        nested: value\n    }";
-        $this->assertEquals(
-            $expected,
-            formatNode('key', $node, 1)
-        );
+        $this->assertEquals($expected, formatNode('key', $node, 1));
     }
 
-    public function testFormatDiffContent(): void
+    public function testStylishFormatDiffContent(): void
     {
-        // Тест для форматирования содержимого diff
         $diff = [
             'key1' => [
                 'type' => 'unchanged',
@@ -151,15 +141,12 @@ class FormatersTest extends TestCase
             ]
         ];
         $expected = "    key1: value1\n  + key2: value2";
-        $this->assertEquals(
-            $expected,
-            formatDiffContent($diff, 1)
-        );
+        $this->assertEquals($expected, formatDiffContent($diff, 1));
     }
 
-    public function testFormatDiff(): void
+    public function testStylishDiff(): void
     {
-        // Тест для форматирования diff
+        // Тест для простого diff
         $diff = [
             'key1' => [
                 'type' => 'unchanged',
@@ -173,25 +160,134 @@ class FormatersTest extends TestCase
             ]
         ];
         $expected = "{\n    key1: value1\n  + key2: value2\n}";
-        $this->assertEquals($expected, formatDiff($diff));
+        $this->assertEquals($expected, stylishDiff($diff));
 
         // Тест для пустого diff
         $emptyDiff = [];
         $expectedEmpty = "{\n\n}";
-        $this->assertEquals($expectedEmpty, formatDiff($emptyDiff));
+        $this->assertEquals($expectedEmpty, stylishDiff($emptyDiff));
     }
 
-    public function testComplexDiff(): void
+    // Тесты для Plain форматтера
+    public function testPlainFormatValue(): void
+    {
+        // Тест для строки
+        $this->assertEquals("'test'", formatPlainValue('test'));
+
+        // Тест для числа
+        $this->assertEquals('123', formatPlainValue(123));
+
+        // Тест для булевых значений
+        $this->assertEquals('true', formatPlainValue(true));
+        $this->assertEquals('false', formatPlainValue(false));
+
+        // Тест для null
+        $this->assertEquals('null', formatPlainValue(null));
+
+        // Тест для массива
+        $array = ['key' => 'value'];
+        $this->assertEquals('[complex value]', formatPlainValue($array));
+
+        // Тест для вложенного массива
+        $nestedArray = ['key' => ['nested' => 'value']];
+        $this->assertEquals('[complex value]', formatPlainValue($nestedArray));
+    }
+
+    public function testPlainFormatNode(): void
+    {
+        // Тест для added item
+        $node = [
+            'type' => 'added',
+            'class' => 'item',
+            'value' => 'value'
+        ];
+        $expected = "Property 'key' was added with value: 'value'";
+        $this->assertEquals($expected, formatPlainNode($node, 'key'));
+
+        // Тест для removed item
+        $node = [
+            'type' => 'removed',
+            'class' => 'item',
+            'value' => 'value'
+        ];
+        $expected = "Property 'key' was removed";
+        $this->assertEquals($expected, formatPlainNode($node, 'key'));
+
+        // Тест для changed item
+        $node = [
+            'type' => 'changed',
+            'class' => 'item',
+            'value' => 'old',
+            'newValue' => 'new'
+        ];
+        $expected = "Property 'key' was updated. From 'old' to 'new'";
+        $this->assertEquals($expected, formatPlainNode($node, 'key'));
+
+        // Тест для unchanged item
+        $node = [
+            'type' => 'unchanged',
+            'class' => 'item',
+            'value' => 'value'
+        ];
+        $this->assertEquals('', formatPlainNode($node, 'key'));
+
+        // Тест для added node
+        $node = [
+            'type' => 'added',
+            'class' => 'node',
+            'children' => [
+                'nested' => [
+                    'type' => 'unchanged',
+                    'class' => 'item',
+                    'value' => 'value'
+                ]
+            ]
+        ];
+        $expected = "Property 'key' was added with value: [complex value]";
+        $this->assertEquals($expected, formatPlainNode($node, 'key'));
+
+        // Тест для removed node
+        $node = [
+            'type' => 'removed',
+            'class' => 'node',
+            'children' => [
+                'nested' => [
+                    'type' => 'unchanged',
+                    'class' => 'item',
+                    'value' => 'value'
+                ]
+            ]
+        ];
+        $expected = "Property 'key' was removed";
+        $this->assertEquals($expected, formatPlainNode($node, 'key'));
+
+        // Тест для unchanged node с вложенными изменениями
+        $node = [
+            'type' => 'unchanged',
+            'class' => 'node',
+            'children' => [
+                'nested' => [
+                    'type' => 'added',
+                    'class' => 'item',
+                    'value' => 'value'
+                ]
+            ]
+        ];
+        $expected = "Property 'key.nested' was added with value: 'value'";
+        $this->assertEquals($expected, formatPlainNode($node, 'key'));
+    }
+
+    public function testPlainDiff(): void
     {
         $diff = [
             'common' => [
                 'type' => 'unchanged',
                 'class' => 'node',
                 'children' => [
-                    'setting1' => [
-                        'type' => 'unchanged',
+                    'follow' => [
+                        'type' => 'added',
                         'class' => 'item',
-                        'value' => 'Value 1'
+                        'value' => false
                     ],
                     'setting2' => [
                         'type' => 'removed',
@@ -203,6 +299,45 @@ class FormatersTest extends TestCase
                         'class' => 'item',
                         'value' => true,
                         'newValue' => null
+                    ],
+                    'setting4' => [
+                        'type' => 'added',
+                        'class' => 'item',
+                        'value' => 'blah blah'
+                    ],
+                    'setting5' => [
+                        'type' => 'added',
+                        'class' => 'node',
+                        'children' => [
+                            'key5' => [
+                                'type' => 'unchanged',
+                                'class' => 'item',
+                                'value' => 'value5'
+                            ]
+                        ]
+                    ],
+                    'setting6' => [
+                        'type' => 'unchanged',
+                        'class' => 'node',
+                        'children' => [
+                            'doge' => [
+                                'type' => 'unchanged',
+                                'class' => 'node',
+                                'children' => [
+                                    'wow' => [
+                                        'type' => 'changed',
+                                        'class' => 'item',
+                                        'value' => '',
+                                        'newValue' => 'so much'
+                                    ]
+                                ]
+                            ],
+                            'ops' => [
+                                'type' => 'added',
+                                'class' => 'item',
+                                'value' => 'vops'
+                            ]
+                        ]
                     ]
                 ]
             ],
@@ -216,28 +351,66 @@ class FormatersTest extends TestCase
                         'value' => 'bas',
                         'newValue' => 'bars'
                     ],
-                    'foo' => [
+                    'nest' => [
+                        'type' => 'changed',
+                        'class' => 'node',
+                        'value' => ['key' => 'value'],
+                        'newValue' => 'str'
+                    ]
+                ]
+            ],
+            'group2' => [
+                'type' => 'removed',
+                'class' => 'node',
+                'children' => [
+                    'abc' => [
                         'type' => 'unchanged',
                         'class' => 'item',
-                        'value' => 'bar'
+                        'value' => 12345
+                    ]
+                ]
+            ],
+            'group3' => [
+                'type' => 'added',
+                'class' => 'node',
+                'children' => [
+                    'deep' => [
+                        'type' => 'unchanged',
+                        'class' => 'node',
+                        'children' => [
+                            'id' => [
+                                'type' => 'unchanged',
+                                'class' => 'node',
+                                'children' => [
+                                    'number' => [
+                                        'type' => 'unchanged',
+                                        'class' => 'item',
+                                        'value' => 45
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
+                    'fee' => [
+                        'type' => 'unchanged',
+                        'class' => 'item',
+                        'value' => 100500
                     ]
                 ]
             ]
         ];
 
-        $expected = "{\n"
-            . "    common: {\n"
-            . "        setting1: Value 1\n"
-            . "      - setting2: 200\n"
-            . "      - setting3: true\n"
-            . "      + setting3: null\n"
-            . "    }\n"
-            . "    group1: {\n"
-            . "      - baz: bas\n"
-            . "      + baz: bars\n"
-            . "        foo: bar\n"
-            . "    }\n"
-            . "}";
-        $this->assertEquals($expected, formatDiff($diff));
+        $expected = "Property 'common.follow' was added with value: false\n"
+            . "Property 'common.setting2' was removed\n"
+            . "Property 'common.setting3' was updated. From true to null\n"
+            . "Property 'common.setting4' was added with value: 'blah blah'\n"
+            . "Property 'common.setting5' was added with value: [complex value]\n"
+            . "Property 'common.setting6.doge.wow' was updated. From '' to 'so much'\n"
+            . "Property 'common.setting6.ops' was added with value: 'vops'\n"
+            . "Property 'group1.baz' was updated. From 'bas' to 'bars'\n"
+            . "Property 'group2' was removed\n"
+            . "Property 'group3' was added with value: [complex value]";
+
+        $this->assertEquals($expected, plainDiff($diff));
     }
 }
